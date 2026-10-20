@@ -1,0 +1,11 @@
+node_modules/
+dist/
+__pycache__/
+.pytest_cache/
+*.db
+*.db-*
+.env
+.venv/
+benchmark-results-local.json
+
+scripts/.python-path
