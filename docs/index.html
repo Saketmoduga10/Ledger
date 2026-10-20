@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="data:,">
+<title>Ledger Live Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;600;800;900&family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f3ee; --surface:#ffffff; --surface2:#eef0e9; --ink:#101812; --muted:#5b665e; --line:#dcded6;
+  --accent:#14532d; --accent2:#dcfce7; --amber:#92400e; --amber-bg:#fef3c7; --red:#991b1b;
+  --radius:16px;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#0d120e; --surface:#161e17; --surface2:#1e2a20; --ink:#eef2ec; --muted:#9aa99e; --line:#2a362c; --accent:#4ade80; --accent2:#14291a; --amber-bg:#2d2106; }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Libre Franklin",system-ui,sans-serif;line-height:1.5}
+a{color:inherit}
+.mono{font-family:"IBM Plex Mono",monospace}
+.top{max-width:1120px;margin:0 auto;padding:18px 20px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:-.02em;font-size:20px}
+.mark{width:36px;height:36px;background:var(--ink);color:var(--bg);display:grid;place-items:center;border-radius:8px;font-family:"IBM Plex Mono",monospace;font-weight:700}
+.pill{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--line);padding:7px 10px;border-radius:999px;background:var(--surface);display:inline-flex;gap:8px;align-items:center}
+.dot{width:8px;height:8px;background:#22c55e;border-radius:50%;box-shadow:0 0 0 4px rgba(34,197,94,.18)}
+.btn{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:700;padding:11px 16px;border-radius:999px;border:1px solid var(--ink);background:var(--ink);color:var(--bg)}
+.btn.ghost{background:transparent;color:var(--ink)}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px 48px}
+.hero{padding:28px 0 22px;display:grid;grid-template-columns:1.25fr .75fr;gap:28px;align-items:end}
+@media(max-width:820px){.hero{grid-template-columns:1fr}}
+h1{font-family:"Newsreader",serif;font-size:clamp(38px,6vw,64px);line-height:.95;letter-spacing:-.03em;margin:14px 0 14px;font-weight:600}
+h1 em{font-style:italic;color:var(--accent)}
+.lead{font-size:18px;color:var(--muted);max-width:620px;margin:0}
+.hero-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.stat{background:var(--surface);border:1px solid var(--line);padding:16px;border-radius:12px}
+.stat b{font-size:26px;display:block;line-height:1;font-family:"IBM Plex Mono",monospace}
+.stat span{font-size:13px;color:var(--muted)}
+.board{background:var(--surface);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.06)}
+.board-head{padding:18px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center}
+.board-head h2{margin:0;font-size:18px;letter-spacing:-.02em}
+.avatars{display:flex;align-items:center}
+.avatar{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:800;color:#fff;border:2px solid var(--surface);margin-left:-8px}
+.avatar:first-child{margin-left:0}
+.grid{display:grid;grid-template-columns:300px 1fr;min-height:520px}
+@media(max-width:820px){.grid{grid-template-columns:1fr}}
+.controls{padding:20px;border-right:1px solid var(--line);background:var(--surface2)}
+@media(max-width:820px){.controls{border-right:none;border-bottom:1px solid var(--line)}}
+.controls h3,.panel h3{margin:0 0 14px;font-size:13px;letter-spacing:.09em;text-transform:uppercase}
+.scenarios{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.scenarios button{border:1px solid var(--line);background:var(--surface);padding:8px 12px;border-radius:999px;font-weight:700;cursor:pointer;color:var(--ink)}
+.scenarios button.active{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.control{margin-bottom:18px}
+.control label{display:flex;justify-content:space-between;font-size:14px;font-weight:600;margin-bottom:8px}
+.control label output{font-family:"IBM Plex Mono",monospace}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.hint{font-size:13px;color:var(--muted);background:var(--surface);border:1px dashed var(--line);padding:12px;border-radius:10px}
+.mainpane{padding:20px;min-width:0}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+@media(max-width:560px){.kpis{grid-template-columns:1fr}}
+.kpi{border:1px solid var(--line);border-radius:12px;padding:14px}
+.kpi span{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.kpi b{font-size:22px;display:block;font-family:"IBM Plex Mono",monospace;margin-top:4px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{ text-align:right;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:10px 8px;border-bottom:1px solid var(--line)}
+th:first-child,td:first-child{text-align:left}
+td{padding:11px 8px;border-bottom:1px solid var(--line);text-align:right;font-family:"IBM Plex Mono",monospace;cursor:pointer}
+td:first-child{font-family:"Libre Franklin",sans-serif;font-weight:700}
+tr:hover td{background:var(--surface2)}
+td.selected{outline:2px solid var(--accent);outline-offset:-2px;background:var(--accent2)}
+.pos{color:var(--accent)} .neg{color:#dc2626}
+.flash td{animation:flash .5s ease}
+@keyframes flash{0%{background:var(--amber-bg)}100%{background:transparent}}
+@media (prefers-reduced-motion: reduce){.flash td{animation:none}}
+@media(max-width:560px){ .mainpane{padding:14px 10px} th,td{padding:9px 4px;font-size:12px} th{font-size:10px} .kpi b{font-size:18px} }
+.lower{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;margin-top:16px}
+@media(max-width:820px){.lower{grid-template-columns:1fr}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px}
+.explain-value{font-size:32px;font-family:"IBM Plex Mono",monospace;font-weight:600;line-height:1}
+.formula{background:var(--surface2);border:1px solid var(--line);padding:12px;border-radius:10px;font-family:"IBM Plex Mono",monospace;font-size:13px;word-break:break-word;margin:14px 0}
+.deps{display:flex;flex-wrap:wrap;gap:8px}
+.dep{font-size:13px;border:1px solid var(--line);padding:7px 9px;border-radius:999px;background:var(--bg)}
+.feed{list-style:none;margin:0;padding:0;display:grid;gap:12px;font-size:14px}
+.feed li{display:flex;gap:10px}
+.feed time{color:var(--muted);font-family:"IBM Plex Mono",monospace;font-size:12px;white-space:nowrap;padding-top:2px}
+.chart{width:100%;height:auto;display:block}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-top:8px}
+.story{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-top:16px;background:var(--surface)}
+@media(max-width:820px){.story{grid-template-columns:1fr}}
+.story div{padding:20px;border-right:1px solid var(--line)} .story div:last-child{border-right:none}
+@media(max-width:820px){.story div{border-right:none;border-bottom:1px solid var(--line)}}
+.story b.num{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--accent)}
+.linkedin{margin-top:16px;background:var(--ink);color:var(--bg);border-radius:16px;padding:24px;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center}
+@media(max-width:700px){.linkedin{grid-template-columns:1fr}}
+.linkedin p{opacity:.85;margin:6px 0 0}
+.linkedin .btn{background:var(--bg);color:var(--ink);border-color:var(--bg);white-space:nowrap}
+footer{padding:22px 0 0;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="logo"><span class="mark">L=</span> Ledger <span style="font-weight:400;color:var(--muted)">/ Live Demo</span></div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+    <span class="pill"><span class="dot"></span> Interactive demo • Try it</span>
+    <a class="btn ghost" href="https://github.com/Saketmoduga10/Ledger" target="_blank" rel="noreferrer">View on GitHub ↗</a>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div>
+      <span class="pill">A financial modeling app I built</span>
+      <h1>Every number can <em>show its receipts.</em></h1>
+      <p class="lead">This is Ledger running in your browser. It is one shared financial model. Change an assumption and the whole forecast updates right away. Click any number and it shows you where that number came from. No Excel files getting emailed around, and no mystery math.</p>
+      <div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap">
+        <a href="#board" class="btn">Try the live board ↓</a>
+        <button class="btn ghost" id="cycleBtn">Test cycle detection</button>
+      </div>
+      <p id="cycleMsg" class="mono" style="font-size:13px;color:var(--amber);min-height:20px;margin-top:10px"></p>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><b>5,000</b><span>edits tested across 10 clients and nothing drifted out of sync</span></div>
+      <div class="stat"><b>9 / 9</b><span>tests passing in the original project</span></div>
+      <div class="stat"><b>10 sec</b><span>to trace where a number came from, instead of hours digging through a spreadsheet</span></div>
+      <div class="stat"><b>3</b><span>scenarios sitting next to each other below</span></div>
+    </div>
+  </section>
+
+  <section class="board" id="board">
+    <div class="board-head">
+      <div>
+        <h2>H1 Forecast, Shared Model (Demo)</h2>
+        <div style="font-size:13px;color:var(--muted)">This is your own copy of the model. Drag a slider and watch everything recalculate.</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="avatars" aria-label="Collaborators online">
+          <span class="avatar" style="background:#14532d">SM</span><span class="avatar" style="background:#92400e">AG</span><span class="avatar" style="background:#1e3a5f">AQ</span><span class="avatar" style="background:#581c87">+4</span>
+        </div>
+        <span style="font-size:13px;color:var(--muted)">Simulated team view</span>
+      </div>
+    </div>
+
+    <div class="grid">
+      <aside class="controls">
+        <h3>Scenario</h3>
+        <div class="scenarios" id="scenarios">
+          <button data-s="conservative">Conservative</button>
+          <button data-s="base" class="active">Base case</button>
+          <button data-s="aggressive">Aggressive</button>
+        </div>
+
+        <h3>Assumptions</h3>
+        <div class="control"><label>Starting customers <output id="oCustomers">1,240</output></label><input type="range" id="inCustomers" min="600" max="2500" step="20" value="1240"></div>
+        <div class="control"><label>Price / seat / mo <output id="oPrice">$49</output></label><input type="range" id="inPrice" min="29" max="89" step="1" value="49"></div>
+        <div class="control"><label>Monthly growth <output id="oGrowth">8.0%</output></label><input type="range" id="inGrowth" min="1" max="18" step="0.5" value="8"></div>
+        <div class="control"><label>Monthly churn <output id="oChurn">2.1%</output></label><input type="range" id="inChurn" min="0.5" max="6" step="0.1" value="2.1"></div>
+        <div class="control"><label>Fixed costs / mo <output id="oFixed">$28,400</output></label><input type="range" id="inFixed" min="15000" max="50000" step="400" value="28400"></div>
+
+        <div class="hint"><strong>How Ledger works:</strong> change one input and only the cells that depend on it recalculate. The engine keeps track of what depends on what, so it stays fast even on really big models.</div>
+      </aside>
+
+      <div class="mainpane">
+        <div class="kpis">
+          <div class="kpi"><span>Ending cash • Jun</span><b id="kCash">$0</b></div>
+          <div class="kpi"><span>Jun net</span><b id="kNet">$0</b></div>
+          <div class="kpi"><span>Customers • Jun</span><b id="kCust">0</b></div>
+        </div>
+
+        <div style="overflow:hidden">
+          <table aria-label="Forecast table, click a cell to explain it">
+            <thead><tr><th>Month</th><th>Customers</th><th>Revenue</th><th>Costs</th><th>Net</th></tr></thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+        <p style="font-size:13px;color:var(--muted);margin:10px 0 0">Click any number in the table and Ledger explains it in plain English on the right.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="lower">
+    <section class="panel" aria-live="polite">
+      <h3>Explain this number</h3>
+      <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline">
+        <strong id="exTitle">June Net</strong><span class="explain-value" id="exValue">$0</span>
+      </div>
+      <div class="formula" id="exFormula">= Gross profit − Fixed costs</div>
+      <p id="exText" style="color:var(--muted);margin:0 0 12px">This is what's left after variable costs and fixed costs. If this goes negative, the model is burning cash that month.</p>
+      <div class="deps" id="exDeps"></div>
+
+      <svg viewBox="0 0 520 110" style="width:100%;margin-top:18px" role="img" aria-label="Dependency graph">
+        <line x1="70" y1="55" x2="200" y2="28" stroke="var(--line)" stroke-width="2"/><line x1="70" y1="55" x2="200" y2="82" stroke="var(--line)" stroke-width="2"/><line x1="260" y1="28" x2="390" y2="55" stroke="var(--line)" stroke-width="2"/><line x1="260" y1="82" x2="390" y2="55" stroke="var(--line)" stroke-width="2"/>
+        <circle cx="55" cy="55" r="18" fill="var(--ink)"/><text x="55" y="59" text-anchor="middle" fill="var(--bg)" font-size="11" font-weight="700">YOU</text>
+        <circle cx="230" cy="28" r="18" fill="var(--surface2)" stroke="var(--line)"/><text x="230" y="32" text-anchor="middle" fill="var(--ink)" font-size="10">REV</text>
+        <circle cx="230" cy="82" r="18" fill="var(--surface2)" stroke="var(--line)"/><text x="230" y="86" text-anchor="middle" fill="var(--ink)" font-size="10">COST</text>
+        <circle cx="420" cy="55" r="22" fill="var(--accent)"/><text x="420" y="59" text-anchor="middle" fill="white" font-size="11" font-weight="700">NET</text>
+      </svg>
+      <p style="font-size:12px;color:var(--muted);text-align:center;margin:4px 0 0">Inputs on the left, the number you clicked on the right.</p>
+    </section>
+
+    <section class="panel">
+      <h3>Simulated activity</h3>
+      <ul class="feed" id="feed">
+        <li><time>09:41</time><span><strong>Anagha</strong> changed Growth from 7.5% to <strong>8.0%</strong>, and 18 cells recalculated</span></li>
+        <li><time>09:38</time><span><strong>You</strong> opened <strong>Explain</strong> on June Net</span></li>
+        <li><time>09:32</time><span><strong>Ahsan</strong> added a scenario: <strong>Aggressive</strong></span></li>
+        <li><time>09:21</time><span>Cycle check passed, no circular formulas found</span></li>
+      </ul>
+      <hr style="border:none;border-top:1px solid var(--line);margin:18px 0">
+      <h3>Cash by scenario</h3>
+      <svg class="chart" viewBox="0 0 520 180" role="img" aria-label="Cash comparison chart for three scenarios">
+        <line x1="36" y1="10" x2="36" y2="150" stroke="var(--line)"/><line x1="36" y1="150" x2="500" y2="150" stroke="var(--line)"/>
+        <polyline id="lineAgg" fill="none" stroke="#14532d" stroke-width="3" points=""/>
+        <polyline id="lineBase" fill="none" stroke="#2563eb" stroke-width="3" points=""/>
+        <polyline id="lineCons" fill="none" stroke="#92400e" stroke-width="3" stroke-dasharray="6 4" points=""/>
+        <text x="36" y="168" font-size="11" fill="var(--muted)">Jan</text><text x="470" y="168" font-size="11" fill="var(--muted)">Jun</text>
+      </svg>
+      <div class="legend"><span>● Aggressive</span><span>● Base case</span><span>● Conservative</span><span id="chartNote"></span></div>
+    </section>
+  </div>
+
+  <section class="story">
+    <div><b class="num">01 · THE PROBLEM</b><h3 style="margin:8px 0">Excel can't explain itself</h3><p style="color:var(--muted);margin:0">A VP asks where a number came from and an analyst spends the next few hours clicking through cells one by one. Ledger just answers it in one click.</p></div>
+    <div><b class="num">02 · THE FIX</b><h3 style="margin:8px 0">One model, everyone in it</h3><p style="color:var(--muted);margin:0">It works like Google Docs. One copy that everyone edits, so there is no version 6 floating around while someone else is fixing version 7, and you can see every change that was made.</p></div>
+    <div><b class="num">03 · THE EDGE</b><h3 style="margin:8px 0">Built for “what if?”</h3><p style="color:var(--muted);margin:0">Scenarios sit side by side, so a team can compare a few versions of the future instead of arguing over which file is right.</p></div>
+  </section>
+
+  <section class="linkedin">
+    <div>
+      <h2 style="margin:0;font-size:22px;letter-spacing:-.02em">See it on LinkedIn</h2>
+      <p>Stick this page in the Featured section of the LinkedIn project. Recruiters can poke at the model themselves instead of just reading a bullet point about it, and the GitHub repo has the code if they want to dig deeper.</p>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <a class="btn" href="https://github.com/Saketmoduga10/Ledger" target="_blank" rel="noreferrer">GitHub Repo ↗</a>
+      <button class="btn" id="copyBtn" style="background:transparent;color:var(--bg);border-color:var(--bg)">Copy demo pitch</button>
+    </div>
+    <p id="copyMsg" style="grid-column:1/-1;margin:0;font-size:13px"></p>
+  </section>
+
+  <footer>
+    <span>Ledger · Built with React, FastAPI WebSockets, a custom formula engine with incremental recalculation and cycle detection, Docker, and GitHub CI</span>
+    <span>Demo simulation. The figures update based on the assumptions you set.</span>
+  </footer>
+</main>
+
+<script>
+var $=function(id){return document.getElementById(id)};
+var months=["Jan","Feb","Mar","Apr","May","Jun"];
+var presets={
+  conservative:{customers:1100,price:45,growth:4,churn:3.2,fixed:31000},
+  base:{customers:1240,price:49,growth:8,churn:2.1,fixed:28400},
+  aggressive:{customers:1380,price:54,growth:14,churn:1.8,fixed:30200}
+};
+var state={customers:1240,price:49,growth:8,churn:2.1,fixed:28400};
+var selected={month:5,kind:"net"};
+function fmt(n){return "$"+Math.round(n).toLocaleString("en-US")}
+function fmtN(n){return Math.round(n).toLocaleString("en-US")}
+function compute(s){
+  var rows=[],cust=Math.round(s.customers),cash=182000;
+  for(var i=0;i<6;i++){
+    if(i>0) cust=Math.round(cust*(1 - s.churn/100 + s.growth/100));
+    var rev=cust*s.price, variable=cust*11, costs=variable+s.fixed, net=rev-costs; cash+=net;
+    rows.push({month:months[i],customers:cust,revenue:rev,costs:costs,net:net,cash:cash,gross:rev-variable});
+  }
+  return rows;
+}
+function syncInputs(){
+  $("inCustomers").value=state.customers; $("inPrice").value=state.price; $("inGrowth").value=state.growth; $("inChurn").value=state.churn; $("inFixed").value=state.fixed;
+  $("oCustomers").textContent=fmtN(state.customers); $("oPrice").textContent="$"+state.price; $("oGrowth").textContent=Number(state.growth).toFixed(1)+"%"; $("oChurn").textContent=Number(state.churn).toFixed(1)+"%"; $("oFixed").textContent=fmt(state.fixed);
+}
+function explain(row){
+  var titles={customers:"Customers",revenue:"Revenue",costs:"Costs",net:"Net"};
+  var vals={customers:fmtN(row.customers),revenue:fmt(row.revenue),costs:fmt(row.costs),net:fmt(row.net)};
+  var formulas={
+    customers:"= Previous customers × (1 − churn + growth)",
+    revenue:"= Customers × Price per seat  →  "+fmtN(row.customers)+" × $"+state.price,
+    costs:"= (Customers × $11 variable) + Fixed costs  →  "+fmt(row.customers*11)+" + "+fmt(state.fixed),
+    net:"= Revenue − Costs  →  "+fmt(row.revenue)+" − "+fmt(row.costs)
+  };
+  var texts={
+    customers:"How many paying customers the model expects this month after churn leaves and new growth arrives.",
+    revenue:"Money in from subscriptions this month. It moves when either customer count or price changes.",
+    costs:"Everything it costs to serve those customers plus the fixed bills that are due whether you sell 10 seats or 2,000.",
+    net:"What's left that month. Positive means the model added cash; negative means it burned cash."
+  };
+  var kind=selected.kind;
+  $("exTitle").textContent=row.month+" "+titles[kind];
+  $("exValue").textContent=vals[kind];
+  $("exFormula").textContent=formulas[kind];
+  $("exText").textContent=texts[kind];
+  var deps=[];
+  if(kind==="net") deps=["Revenue: "+fmt(row.revenue),"Costs: "+fmt(row.costs),"Price: $"+state.price];
+  else if(kind==="revenue") deps=["Customers: "+fmtN(row.customers),"Price: $"+state.price+"/seat"];
+  else if(kind==="costs") deps=["Variable: $11 / customer","Fixed: "+fmt(state.fixed)];
+  else deps=["Growth: "+state.growth+"%","Churn: "+state.churn+"%"];
+  $("exDeps").innerHTML=deps.map(function(d){return '<span class="dep">'+d+'</span>'}).join("");
+}
+function render(flash){
+  syncInputs();
+  var rows=compute(state);
+  var tb=$("tbody"); tb.className=flash?"flash":"";
+  tb.innerHTML=rows.map(function(r,i){
+    function cell(kind,val,cls){var sel=(selected.month===i&&selected.kind===kind)?" selected":"";return '<td class="'+(cls||"")+sel+'" data-m="'+i+'" data-k="'+kind+'">'+val+'</td>'}
+    return "<tr><td>"+r.month+"</td>"+cell("customers",fmtN(r.customers))+cell("revenue",fmt(r.revenue))+cell("costs",fmt(r.costs))+cell("net",fmt(r.net),r.net>=0?"pos":"neg")+"</tr>";
+  }).join("");
+  var last=rows[5];
+  $("kCash").textContent=fmt(last.cash); $("kNet").textContent=fmt(last.net); $("kCust").textContent=fmtN(last.customers);
+  explain(rows[selected.month]);
+  // chart
+  function points(key){
+    var all=[compute(presets.conservative),compute(presets.base),compute(presets.aggressive)];
+    var vals=[]; all.forEach(function(a){a.forEach(function(r){vals.push(r.cash)})});
+    var min=Math.min.apply(null,vals), max=Math.max.apply(null,vals);
+    var data=compute(presets[key]);
+    return data.map(function(r,i){var x=36+i*92; var y=150-((r.cash-min)/(max-min||1))*125; return x+","+y.toFixed(1)}).join(" ");
+  }
+  $("lineAgg").setAttribute("points",points("aggressive"));
+  $("lineBase").setAttribute("points",points("base"));
+  $("lineCons").setAttribute("points",points("conservative"));
+  $("chartNote").textContent="Jun cash, Aggressive "+fmt(compute(presets.aggressive)[5].cash)+" vs Conservative "+fmt(compute(presets.conservative)[5].cash);
+  // wire cells
+  var cells=tb.querySelectorAll("td[data-k]");
+  for(var j=0;j<cells.length;j++){cells[j].addEventListener("click",function(){selected.month=parseInt(this.getAttribute("data-m"),10); selected.kind=this.getAttribute("data-k"); render(false);});}
+}
+function bind(id,key,parse){
+  $(id).addEventListener("input",function(){state[key]=parse(this.value); document.querySelectorAll("#scenarios button").forEach(function(b){b.classList.remove("active")}); render(true);});
+}
+bind("inCustomers","customers",function(v){return parseFloat(v)});
+bind("inPrice","price",function(v){return parseFloat(v)});
+bind("inGrowth","growth",function(v){return parseFloat(v)});
+bind("inChurn","churn",function(v){return parseFloat(v)});
+bind("inFixed","fixed",function(v){return parseFloat(v)});
+document.querySelectorAll("#scenarios button").forEach(function(btn){
+  btn.addEventListener("click",function(){
+    document.querySelectorAll("#scenarios button").forEach(function(b){b.classList.remove("active")});
+    btn.classList.add("active");
+    var p=presets[btn.getAttribute("data-s")]; state={customers:p.customers,price:p.price,growth:p.growth,churn:p.churn,fixed:p.fixed};
+    render(true);
+    var li=document.createElement("li"); li.innerHTML="<time>Now</time><span><strong>You</strong> switched to the <strong>"+btn.textContent+"</strong> scenario</span>";
+    var feed=$("feed"); feed.insertBefore(li,feed.firstChild);
+  });
+});
+$("cycleBtn").addEventListener("click",function(){
+  $("cycleMsg").textContent="Cycle detected:  Net → Costs → Net  •  Ledger blocked the edit and highlighted the loop so the model can't poison itself.";
+});
+$("copyBtn").addEventListener("click",function(){
+  var text="I built Ledger, a financial modeling app where a whole team works in one shared model instead of passing Excel files around. It has a custom formula engine and an Explain this number feature, so you can click any figure and see exactly where it came from. There is a live demo too, try clicking a few numbers.";
+  if(navigator.clipboard){navigator.clipboard.writeText(text).then(function(){$("copyMsg").textContent="Pitch copied. Paste it into your LinkedIn project description.";});}
+  else{$("copyMsg").textContent=text;}
+});
+render(false);
+</script>
+</body>
+</html>
