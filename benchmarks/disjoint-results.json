@@ -1,0 +1,11 @@
+{
+  "workload": "disjoint",
+  "clients": 10,
+  "edit_attempts": 5000,
+  "committed": 5000,
+  "conflicts": 0,
+  "divergent_clients": 0,
+  "median_acknowledgement_ms": 38.87,
+  "p95_acknowledgement_ms": 58.3,
+  "scope": "Localhost; single server worker; revision conflicts count as rejected attempts."
+}

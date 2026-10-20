@@ -1,0 +1,11 @@
+{
+  "workload": "contention",
+  "clients": 10,
+  "edit_attempts": 5000,
+  "committed": 500,
+  "conflicts": 4500,
+  "divergent_clients": 0,
+  "median_acknowledgement_ms": 7.6,
+  "p95_acknowledgement_ms": 10.99,
+  "scope": "Localhost; single server worker; revision conflicts count as rejected attempts."
+}

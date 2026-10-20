@@ -1,0 +1,11 @@
+{
+  "python": "3.12.14",
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.39",
+  "cells": 6000,
+  "changed_cells": 1,
+  "affected_cells": 30,
+  "iterations": 120,
+  "incremental_median_ms": 0.072,
+  "full_evaluation_median_ms": 5.681,
+  "scope": "In-process engine; excludes network and database. Full evaluation reuses parsed ASTs."
+}
