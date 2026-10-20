@@ -92,10 +92,10 @@ td.selected{outline:2px solid var(--accent);outline-offset:-2px;background:var(-
 .story div{padding:20px;border-right:1px solid var(--line)} .story div:last-child{border-right:none}
 @media(max-width:820px){.story div{border-right:none;border-bottom:1px solid var(--line)}}
 .story b.num{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--accent)}
-.linkedin{margin-top:16px;background:var(--ink);color:var(--bg);border-radius:16px;padding:24px;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center}
-@media(max-width:700px){.linkedin{grid-template-columns:1fr}}
-.linkedin p{opacity:.85;margin:6px 0 0}
-.linkedin .btn{background:var(--bg);color:var(--ink);border-color:var(--bg);white-space:nowrap}
+.closing{margin-top:16px;background:var(--ink);color:var(--bg);border-radius:16px;padding:24px;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center}
+@media(max-width:700px){.closing{grid-template-columns:1fr}}
+.closing p{opacity:.85;margin:6px 0 0}
+.closing .btn{background:var(--bg);color:var(--ink);border-color:var(--bg);white-space:nowrap}
 footer{padding:22px 0 0;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 </style>
 </head>
@@ -226,16 +226,16 @@ footer{padding:22px 0 0;color:var(--muted);font-size:13px;display:flex;justify-c
     <div><b class="num">03 · THE EDGE</b><h3 style="margin:8px 0">Built for “what if?”</h3><p style="color:var(--muted);margin:0">Scenarios sit side by side, so a team can compare a few versions of the future instead of arguing over which file is right.</p></div>
   </section>
 
-  <section class="linkedin">
+  <section class="closing">
     <div>
-      <h2 style="margin:0;font-size:22px;letter-spacing:-.02em">See it on LinkedIn</h2>
-      <p>Stick this page in the Featured section of the LinkedIn project. Recruiters can poke at the model themselves instead of just reading a bullet point about it, and the GitHub repo has the code if they want to dig deeper.</p>
+      <h2 style="margin:0;font-size:22px;letter-spacing:-.02em">Thanks for poking around</h2>
+      <p>I built Ledger because the spreadsheet every finance team relies on cannot explain its own numbers and does not work well when a whole team shares it. This demo covers the main ideas. The full story and all of the source code live on GitHub, and I would be glad to hear what you think of it.</p>
     </div>
     <div style="display:flex;gap:10px;flex-wrap:wrap">
-      <a class="btn" href="https://github.com/Saketmoduga10/Ledger" target="_blank" rel="noreferrer">GitHub Repo ↗</a>
-      <button class="btn" id="copyBtn" style="background:transparent;color:var(--bg);border-color:var(--bg)">Copy demo pitch</button>
+      <a class="btn" href="https://github.com/Saketmoduga10/Ledger" target="_blank" rel="noreferrer">See the code on GitHub ↗</a>
+      <a class="btn" href="https://www.linkedin.com/in/saket-moduga-87a944259/" target="_blank" rel="noreferrer" style="background:transparent;color:var(--bg);border-color:var(--bg)">LinkedIn ↗</a>
+      <a class="btn" href="#board" style="background:transparent;color:var(--bg);border-color:var(--bg)">Back to the board ↑</a>
     </div>
-    <p id="copyMsg" style="grid-column:1/-1;margin:0;font-size:13px"></p>
   </section>
 
   <footer>
@@ -343,11 +343,6 @@ document.querySelectorAll("#scenarios button").forEach(function(btn){
 });
 $("cycleBtn").addEventListener("click",function(){
   $("cycleMsg").textContent="Cycle detected:  Net → Costs → Net  •  Ledger blocked the edit and highlighted the loop so the model can't poison itself.";
-});
-$("copyBtn").addEventListener("click",function(){
-  var text="I built Ledger, a financial modeling app where a whole team works in one shared model instead of passing Excel files around. It has a custom formula engine and an Explain this number feature, so you can click any figure and see exactly where it came from. There is a live demo too, try clicking a few numbers.";
-  if(navigator.clipboard){navigator.clipboard.writeText(text).then(function(){$("copyMsg").textContent="Pitch copied. Paste it into your LinkedIn project description.";});}
-  else{$("copyMsg").textContent=text;}
 });
 render(false);
 </script>
